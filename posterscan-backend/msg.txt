@@ -1,0 +1,8 @@
+Matt & Becky got dis!
+
+qr-posterscan - library to scrape and get a date and event from a website on a qr
+
+posterscan - library to read a poster image and get a date and event from a website
+
+
+

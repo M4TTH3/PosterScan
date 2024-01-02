@@ -18,9 +18,8 @@ class PosterOCRScanner:
     _scanner: Reader
 
     def __init__(self) -> None:
-        
         #Disable gpu=False if using GPU
-        self._scanner = Reader(lang_list=['en'], gpu=False)
+        self._scanner = Reader(lang_list=['en'], gpu=False) 
     
     def preprocess_image_1(self, path: Path | str) -> np.ndarray:
         """
@@ -102,6 +101,25 @@ class PosterScan:
         self._max_tokens = 2048
         self._model = "gpt-3.5-turbo"
 
+    def getPosterContents(self, img: str) -> dict:
+        """
+        Main wrapper for getting the poster contents. Returns a dictionary.
+        {
+            title: str
+            contents: str
+            date: str (in UTC time)
+        }
+        """
+
+        # Try scanning the poster first for the date
+        img_arr = self.convert_base64_to_arr(img)
+        text = self._poster_ocr.scantext(img_arr)
+        ret = self._post_process_poster(text)
+        if (ret['date'] != ''): return ret
+
+        # If no date parameter, then we try scanning the QR
+        
+
     def convert_base64_to_arr(self, img: str) -> np.ndarray:
         decoded = b64decode(img)
         with Image.open(io.BytesIO(decoded)) as image:
@@ -146,5 +164,11 @@ class PosterScan:
 
         return ret
 
-    
 
+if __name__ == "__main__":
+    scanner = PosterOCRScanner()
+    for path in Path('before-image').iterdir():
+        new_img = scanner.preprocess_image_1(path)
+        new_path = Path('after-image') / Path(path.name)
+
+        cv2.imwrite(str(new_path), new_img)

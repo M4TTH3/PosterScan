@@ -21,22 +21,19 @@ class PosterOCRScanner:
         #Disable gpu=False if using GPU
         self._scanner = Reader(lang_list=['en'], gpu=False) 
     
-    def preprocess_image_1(self, path: Path | str) -> np.ndarray:
+    def preprocess_image_1(self, img: np.ndarray) -> np.ndarray:
         """
         Converts image (base64) to Image applying preprocess techniques.
         1. Binarize
         2. Normalize
         3. Erode Noise
         """
-        if isinstance(path, Path): path = str(path.absolute())
-
-        img: np.ndarray = cv2.imread(path, 0)
         img = self._binarization(img)
         img = self._normalize(img)
         img = self._erodenoise(img)
         return img
 
-    def preprocess_image_2(self, path: Path | str) -> np.ndarray:
+    def preprocess_image_2(self, img: np.ndarray) -> np.ndarray:
         """
         Does not work for easyocr
 
@@ -45,9 +42,6 @@ class PosterOCRScanner:
         2. Erodenoise
         3. Laplacian
         """
-        if isinstance(path, Path): path = str(path.absolute())
-
-        img: np.ndarray = cv2.imread(path, 0)
         img = self._normalize(img)
         img = self._erodenoise(img)
         img = self._laplacian(img)
@@ -101,7 +95,7 @@ class PosterScan:
         self._max_tokens = 2048
         self._model = "gpt-3.5-turbo"
 
-    def getPosterContents(self, img: str) -> dict:
+    def get_poster_contents(self, img: bytes) -> dict:
         """
         Main wrapper for getting the poster contents. Returns a dictionary.
         {
@@ -118,9 +112,9 @@ class PosterScan:
         if (ret['date'] != ''): return ret
 
         # If no date parameter, then we try scanning the QR
-        
 
-    def convert_base64_to_arr(self, img: str) -> np.ndarray:
+        
+    def convert_base64_to_arr(self, img: bytes) -> np.ndarray:
         decoded = b64decode(img)
         with Image.open(io.BytesIO(decoded)) as image:
             #Close image on ret

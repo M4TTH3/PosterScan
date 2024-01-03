@@ -6,7 +6,9 @@
 Returns the contents after scanning the image/QR and getting info about the event
 
 POST Body (JSON):
-    - image (base64)
+    {
+        image: str (base64)
+    }
 
 RETURN Body (JSON):
     {

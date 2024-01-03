@@ -1,4 +1,4 @@
 .env*
 posterenv
 __pycache__
-
+env

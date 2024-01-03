@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  nextapp:
+    build:
+      context:
+        ./posterscan-frontend
+    expose:
+      - 3000
+
+  flaskapp:
+    build:
+      context:
+        ./posterscan-backend
+    expose:
+      - 5000
+    deploy:
+      replicas: 1 # Increase number to scale
+  
+  nginx:
+    build:
+      context:
+        ./nginx
+    depends_on:
+      - flaskapp
+      - nextapp
+    ports:
+      - 80:80
+    environment:
+      - SERVER_NAME="" # Setup empty for now
+    

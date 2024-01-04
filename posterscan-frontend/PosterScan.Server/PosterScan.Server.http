@@ -1,0 +1,6 @@
+@PosterScan.Server_HostAddress = http://localhost:5104
+
+GET {{PosterScan.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,5 +1,6 @@
 from qreader import QReader
 from requests import request
+from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import cv2
 
@@ -28,13 +29,15 @@ class PosterQRScanner:
                 return True
 
         return False
-       
     
-    def scrapeLink(self) -> bool:
-        """
-        Scrapes the websites and determines if there is a date within the website
-        """
-        data = request('GET', self.cur_link)
+    def webInfo(self,url)-> str:
+        if (url):
+            page = urlopen(url)
+            html_bytes = page.read()
+            html = html_bytes.decode("utf-8")
+            return html
+        return ""
+
 
 if __name__ == "__main__":
     scanner = PosterQRScanner()
@@ -47,6 +50,7 @@ if __name__ == "__main__":
             img = cv2.cvtColor(imgg, cv2.COLOR_BGR2RGB)        
         if scanner.readQR(img):
             print(f"Found URL: {scanner.cur_link}")
+            print(scanner.webInfo(scanner.cur_link))
         else:
             print("No URL found in this image")
         

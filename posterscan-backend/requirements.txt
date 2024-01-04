@@ -2,6 +2,6 @@ flask
 qreader
 openai
 python-dotenv
-bs4
+beautifulsoup4
 requests
 gunicorn

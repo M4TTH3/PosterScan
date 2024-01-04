@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "69ozVsCKmQFtE9NbABrKicjYGlKexisJW7s3g491Tls=",
+  "Source": "PosterScan.Server",
+  "BasePath": "_content/PosterScan.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

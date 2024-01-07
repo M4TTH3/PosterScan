@@ -8,6 +8,7 @@ export default async function Home() {
     <>
       <Greet />
       <ShowUsersName />
+      <div className="border flex mx-auto justify-center p-4 align-center">center a div why does it not update correctly </div>
       <TestSharp />
     </>
   )

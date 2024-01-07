@@ -3,7 +3,7 @@ from posterscan import PosterScan
 
 app = Flask(__name__)
 
-app.route('/api/scanposter', methods=['POST'])
+@app.route('/api/scanposter', methods=['POST'])
 def scanposter():
     if not request.method == 'POST': return 'Not a POST', 400
 
@@ -17,10 +17,12 @@ def scanposter():
         scanner = PosterScan()
 
         ret = scanner.get_poster_contents(img=img)
+        if not (ret.get('title') or ret.get('contents') or ret.get('date')): 
+            return 'Unable to retrieve any data', 400
+        
         return jsonify(ret), 200
     except:
         return 'Internal server error', 500
-
 
 
 if __name__ == "__main__":

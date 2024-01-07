@@ -1,5 +1,5 @@
 from datetime import datetime
-# from qrposterscan import PosterQRScanner
+from qrposterscan import PosterQRScanner
 from openai import OpenAI
 from easyocr import Reader
 
@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 import json
-from base64 import b64decode
+import base64
 from PIL import Image
 import cv2
 import numpy as np
@@ -74,7 +74,7 @@ class PosterScan:
     PosterQRScanner OR PosterOCRScanner and post processes the text.
     """
     _poster_ocr: PosterOCRScanner
-    # _poster_qr: PosterQRScanner
+    _poster_qr: PosterQRScanner
     _api_key: str
     _client: OpenAI
 
@@ -83,7 +83,7 @@ class PosterScan:
 
     def __init__(self) -> None:
         self._poster_ocr = PosterOCRScanner()
-        # self._poster_qr = PosterQRScanner()
+        self._poster_qr = PosterQRScanner()
 
         if Path(".env.dev"):
             load_dotenv(Path(".env.dev").absolute())
@@ -104,18 +104,29 @@ class PosterScan:
             date: str (in UTC time)
         }
         """
+        # Convert image from base64 to numpy
+        img_arr = self.convert_base64_to_arr(img)
 
         # Try scanning the poster first for the date
-        img_arr = self.convert_base64_to_arr(img)
         text = self._poster_ocr.scantext(img_arr)
-        ret = self._post_process_poster(text)
-        if (ret['date'] != ''): return ret
+        ret: dict[str, str] = self._post_process_poster(text)
+        if (ret['date'] and ret['title']): return ret
 
         # If no date parameter, then we try scanning the QR
+        qr_text = self._poster_qr.scan_qr(img_arr)        
+        if not qr_text: return ret
+
+        qr_ret = self._post_process_poster(qr_text)
+        
+        # Compare the old ret and qr_ret for better option
+        for key in ret.keys():
+            if (ret[key] > qr_ret[key]): return ret
+        
+        return qr_ret
 
         
     def convert_base64_to_arr(self, img: bytes) -> np.ndarray:
-        decoded = b64decode(img)
+        decoded = base64.b64decode(img)
         with Image.open(io.BytesIO(decoded)) as image:
             #Close image on ret
             return np.array(image)
@@ -160,9 +171,14 @@ class PosterScan:
 
 
 if __name__ == "__main__":
-    scanner = PosterOCRScanner()
+    scanner = PosterScan()
     for path in Path('before-image').iterdir():
-        new_img = scanner.preprocess_image_1(path)
-        new_path = Path('after-image') / Path(path.name)
+        img = cv2.imread(str(path))
+        _, im_arr = cv2.imencode('.jpg', img)
+        im_bytes = im_arr.tobytes()
+        img_base64 = base64.b64encode(im_bytes)
+        with open(Path('base64_test.txt'), 'b+w') as file:
+            file.write(img_base64)
 
-        cv2.imwrite(str(new_path), new_img)
+        break
+        # print(scanner.get_poster_contents(img_base64))

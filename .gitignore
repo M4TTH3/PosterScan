@@ -1,4 +1,5 @@
 .env*
 posterenv
 __pycache__
-
+posterscan-backend/env
+posterscan-backend/env.dev

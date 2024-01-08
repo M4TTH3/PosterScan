@@ -72,7 +72,7 @@ class PosterScan:
     """
     The main wrapper class of qr-posterscan. PosterScan gets the data from either
     PosterQRScanner OR PosterOCRScanner and post processes the text.
-    """
+    
     _poster_ocr: PosterOCRScanner
     # _poster_qr: PosterQRScanner
     _api_key: str
@@ -80,6 +80,7 @@ class PosterScan:
 
     _max_tokens: int
     _model: str
+    """
 
     def __init__(self) -> None:
         self._poster_ocr = PosterOCRScanner()

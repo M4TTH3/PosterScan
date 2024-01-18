@@ -13,20 +13,21 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const bodyString = Buffer.concat(chunks).toString('utf-8');
+    const image_obj = JSON.parse(bodyString);
+    image_obj['image'] = image_obj['image'].split(',')[1]; // Remove the base64 description
 
-    const image = JSON.parse(bodyString);
+    const scanPosterResponse = await axios.post('http://localhost:5000/api/scanposter', image_obj);
+    const iCalSettings = scanPosterResponse.data;
 
-    console.log("Parsed image: ", image);
+    console.log(iCalSettings)
 
-    const scanPosterResponse = await axios.post('http://localhost:5000/api/scanposter', { image: image });
-    console.log(scanPosterResponse);
+    // const iCalResponse = await axios.post('http://localhost:5000/api/getical', iCalSettings);
+    // console.log(iCalResponse)
     try {
-        
-
         NextResponse.json({contents: contents});
     } 
     catch (error) {
-        console.error('Error processing image', error);
+        // console.error('Error processing image', error);
         res.status(500).json({message: 'Could not get image'});
     }
     

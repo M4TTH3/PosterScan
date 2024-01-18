@@ -7,5 +7,5 @@ requests
 gunicorn
 pyzbar
 easyocr
-ics
+icalendar
 flask-cors

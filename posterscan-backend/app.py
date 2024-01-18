@@ -117,7 +117,7 @@ def get_ical() -> Response:
         cal.add_component(event)
 
         res = make_response(cal.to_ical()) 
-        res.headers["Content-Disposition"] = "attachment; filename=calendar.ics"
+        res.headers["Content-Type"] = "text/calendar"
 
         return res
     except Exception as e:

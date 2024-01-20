@@ -1,6 +1,20 @@
 # Creators:
-Matthew, Becky, Jerry
+Matthew, Jerry, Becky
 
+# Preview:
+This app allows users to upload poster images and QR codes of events and download an iCal file (they are used to save events on calendar apps).
+
+## Upload an Image:
+
+![Alt text](/demoimages/image.png)
+
+## Download the File
+![Alt text](/demoimages/image-1.png)
+
+## Get an iCal file with relevant event and date
+![Alt text](/demoimages/image-2.png)
+
+# Production Setup
 ## Packages to install for Ubuntu:
 ```bash
 sudo apt-get update
